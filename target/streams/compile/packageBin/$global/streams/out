@@ -1,0 +1,11 @@
+[0m[[0minfo[0m] [0mPackaging /home/mahjoubi/Documents/Spark_Scala/target/scala-2.11/sparkscala_2.11-1.0.jar ...[0m
+[0m[[0mdebug[0m] [0mInput file mappings:[0m
+[0m[[0mdebug[0m] [0m	KMeansExample$.class[0m
+[0m[[0mdebug[0m] [0m	  /home/mahjoubi/Documents/Spark_Scala/target/scala-2.11/classes/KMeansExample$.class[0m
+[0m[[0mdebug[0m] [0m	KMeansExample.class[0m
+[0m[[0mdebug[0m] [0m	  /home/mahjoubi/Documents/Spark_Scala/target/scala-2.11/classes/KMeansExample.class[0m
+[0m[[0mdebug[0m] [0m	KMeansExample$$anonfun$1.class[0m
+[0m[[0mdebug[0m] [0m	  /home/mahjoubi/Documents/Spark_Scala/target/scala-2.11/classes/KMeansExample$$anonfun$1.class[0m
+[0m[[0mdebug[0m] [0m	KMeansExample$$typecreator1$1.class[0m
+[0m[[0mdebug[0m] [0m	  /home/mahjoubi/Documents/Spark_Scala/target/scala-2.11/classes/KMeansExample$$typecreator1$1.class[0m
+[0m[[0minfo[0m] [0mDone packaging.[0m
