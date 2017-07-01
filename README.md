@@ -11,6 +11,7 @@ A "toy" dataset is used here. As we can see, it is obvious that 16 clusters cons
 
 <p align="center">
   <img width="460" height="300" src="figure/clustering/dataset.png">
+   <div class="caption">Dataset</div>
 </p>
 
 ## The Elbow Method - an intuitive approach
@@ -23,7 +24,10 @@ The idea is that we want a small value of SSE and we know that the SSE tends to 
 
 Here, we use the computeCost function available in Spark to compute the SSE. 
 
-<center>![Elbow method - an intuitive approach](figure/clustering/elbowIntuitive.png)
+<p align="center">
+  <img width="460" height="300" src="figure/clustering/elbowIntuitive.png">
+   <div class="caption">Elbow method - an intuitive approach</div>
+</p>
 
 It appears on this figure that a good value of k can be 15 or 16 that is consistent with our dataset.
 
@@ -31,6 +35,9 @@ It appears on this figure that a good value of k can be 15 or 16 that is consist
 Here we propose to plot the Elbow line based on a train-validation approach.
 Thus the initial dataset is split randomly in a training and a validation dataset. The training dataset contains 75% of the initial dataset. Now the model of the KMeans algorithm is computed based on the training dataset. We plot the SSE computed on the training and validation datasets.
 
-<center>![Elbow method - a train-validation approach](figure/clustering/elbowTrainValidation.png)
+<p align="center">
+  <img width="600" height="350" src="figure/clustering/elbowTrainValidation.png">
+   <div class="caption">Elbow method - a train-validation approach</div>
+</p>
 
 Based on the cost computed on the validation dataset, it is clear that 16 is the optimal number of clusters.
