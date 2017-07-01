@@ -8,7 +8,7 @@ For doing that, we are going to use Spark and Scala. All the sources used for th
 ## Dataset
 
 A "toy" dataset is used here. As we can see, it is obvious that 16 clusters constitued this 2D dataset.
-<center>![dataset](https://user-images.githubusercontent.com/13676465/27764211-f745f768-5e93-11e7-8ec0-26c3663b3aa0.png)
+![dataset](https://github.com/NajibMAHJOUBI/Spark_Scala/blob/master/figure/test.png)
 <center>![Dataset](figure/clustering/dataset.png)
 
 ## The Elbow Method - an intuitive approach
