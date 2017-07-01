@@ -12,7 +12,7 @@ A "toy" dataset is used here. As we can see, it is obvious that 16 clusters cons
 ![Dataset](figure/clustering/dataset.png)
 
 <p align="center">
-  <img /figure/clustering/dataset.png>
+  <img width="460" height="300" src="figure/clustering/dataset.png">
 </p>
 
 ## The Elbow Method - an intuitive approach
