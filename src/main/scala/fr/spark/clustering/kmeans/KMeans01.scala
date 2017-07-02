@@ -32,8 +32,8 @@ object KMeans01 {
                 .persist()
     
    
-   val kmeans = new KMeansTask(data, data, 4 to 20 by 1)
-   val elbowCost = kmeans.computeElbowMethod()
+   val kmeans = new KMeansTask()
+   val elbowCost = kmeans.computeElbowMethod(data, data, 4 to 20 by 1)
    spark.createDataFrame(elbowCost).toDF("k", "cost").write.mode(SaveMode.Overwrite).parquet("target/data/elbowcost") 
 
     spark.stop()

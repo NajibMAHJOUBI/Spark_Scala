@@ -39,8 +39,8 @@ object KMeans02 {
    validation.persist()
 
     
-   val trainingCost = new KMeansTask(training, training, 4 to 20 by 1).computeElbowMethod()
-   val validationCost = new KMeansTask(training, validation, 4 to 20 by 1).computeElbowMethod()
+   val trainingCost = new KMeansTask().computeElbowMethod(training, training, 4 to 20 by 1)
+   val validationCost = new KMeansTask().computeElbowMethod(training, validation, 4 to 20 by 1)
 
 
    spark.createDataFrame(trainingCost).toDF("k", "cost")

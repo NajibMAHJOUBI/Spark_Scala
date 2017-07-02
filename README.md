@@ -11,7 +11,7 @@ A "toy" dataset is used here. As we can see, it is obvious that 16 clusters cons
 
 <p align="center">
   <img width="460" height="300" src="figure/clustering/dataset.png">
-   <div class="caption">Dataset</div>
+   <div class="caption" align="center">Dataset</div>
 </p>
 
 ## The Elbow Method - an intuitive approach
@@ -26,7 +26,7 @@ Here, we use the computeCost function available in Spark to compute the SSE.
 
 <p align="center">
   <img width="460" height="300" src="figure/clustering/elbowIntuitive.png">
-   <div class="caption">Elbow method - an intuitive approach</div>
+   <div class="caption"  align="center">Elbow method - an intuitive approach</div>
 </p>
 
 It appears on this figure that a good value of k can be 15 or 16 that is consistent with our dataset.
@@ -37,7 +37,16 @@ Thus the initial dataset is split randomly in a training and a validation datase
 
 <p align="center">
   <img width="600" height="350" src="figure/clustering/elbowTrainValidation.png">
-   <div class="caption">Elbow method - a train-validation approach</div>
+   <div class="caption" align="center">Elbow method - a train-validation approach</div>
 </p>
 
 Based on the cost computed on the validation dataset, it is clear that 16 is the optimal number of clusters.
+
+### Cross-Validation approach
+
+<p align="center">
+  <img width="600" height="350" src="figure/clustering/elbowCrossValidation.png">
+   <div class="caption" align="center">Elbow method - a cross-validation approach</div>
+</p>
+
+

@@ -43,8 +43,8 @@ object KMeans03 {
    (0 to splits.length-1 by 1).foreach(index => {
       splits(index)._1.persist()
       splits(index)._2.persist()
-      val trainingCost = new KMeansTask(splits(index)._1, splits(index)._1, 4 to 20 by 1).computeElbowMethod()
-      val validationCost = new KMeansTask(splits(index)._1, splits(index)._2, 4 to 20 by 1).computeElbowMethod()
+      val trainingCost = new KMeansTask().computeElbowMethod(splits(index)._1, splits(index)._1, 4 to 20 by 1)
+      val validationCost = new KMeansTask().computeElbowMethod(splits(index)._1, splits(index)._2, 4 to 20 by 1)
       splitTrainingCost ++= Map(index -> trainingCost)
       splitValidationCost ++= Map(index -> validationCost)
       splits(index)._1.unpersist()

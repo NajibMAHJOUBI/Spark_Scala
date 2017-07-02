@@ -7,7 +7,7 @@ import org.apache.spark.mllib.clustering.KMeans.K_MEANS_PARALLEL
 
 import scala.collection.immutable
 
-class KMeansTask(training: RDD[Vector], validation: RDD[Vector], rangeK: immutable.Range) {
+class KMeansTask() {
 
   def computeKMeansModel(data: RDD[Vector], nbCluster: Int): KMeansModel = {
      new KMeans()
@@ -17,11 +17,13 @@ class KMeansTask(training: RDD[Vector], validation: RDD[Vector], rangeK: immutab
       .setInitializationMode(K_MEANS_PARALLEL)
       .run(data)}
 
-  def computeElbowMethod(): Seq[(Int, Double)] = {
+  def computeElbowMethod(training: RDD[Vector], validation: RDD[Vector], rangeK: immutable.Range): Seq[(Int, Double)] = {
     var resultElbow: List[(Int, Double)] = List()
     rangeK.foreach(nbCluster => {
          val cost: Double = computeKMeansModel(training, nbCluster).computeCost(validation)
          resultElbow = resultElbow ++ List((nbCluster, cost))})
     resultElbow}
+
+  
 
 }
