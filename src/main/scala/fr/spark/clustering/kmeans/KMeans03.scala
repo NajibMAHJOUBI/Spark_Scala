@@ -32,13 +32,6 @@ object KMeans03 {
                 .map(p => Vectors.dense(p.getDouble(p.fieldIndex("x")), p.getDouble(p.fieldIndex("y")))) 
                 .persist()
     
-   
-   val kmeans = new KMeansTask(data, data, 4 to 20 by 1)
-   val elbowCost = kmeans.computeElbowMethod()
-   spark.createDataFrame(elbowCost).toDF("k", "cost").write.mode(SaveMode.Overwrite).parquet("target/data/elbowcost")
-
-
-
    // Cross-Validator
    val nbFolds = 2
    val splits = MLUtils.kFold(data, nbFolds, 123L)
@@ -55,31 +48,24 @@ object KMeans03 {
       splitTrainingCost ++= Map(index -> trainingCost)
       splitValidationCost ++= Map(index -> validationCost)
       splits(index)._1.unpersist()
-      splits(index)._2.unpersist()
- }) 
-
+      splits(index)._2.unpersist()}) 
 
    splitTrainingCost = splitTrainingCost
                         .map(x => x._2)
                         .reduce(_ ++ _)
                         .groupBy(x => x._1)
-                      //   .map(x => (x._1, x._2.map(y => y._2).sum))
-   println(splitTrainingCost)
+   val trainingCost = splitTrainingCost.map(x => (x._1, x._2.map(y => y._2).sum / nbFolds.toDouble)).toList
+   spark.createDataFrame(trainingCost).toDF("k", "cost")
+        .write.mode(SaveMode.Overwrite).parquet("target/data/crossvalidation/trainingCost")  
 
-/**
-                         .map(x => (x._1, x._2/nbFolds.toDouble))
-   spark.createDataFrame(splitTrainingCost).toDF("k", "cost")
-        .write.mode(SaveMode.Overwrite).parquet("target/data/crossvalidation/trainingCost")
-   
    splitValidationCost = splitValidationCost
                         .map(x => x._2)
                         .reduce(_ ++ _)
                         .groupBy(x => x._1)
-                        .map(x => (x._1, x._2.map(y => y._2).sum))
-                        .map(x => (x._1, x._2/nbFolds.toDouble))
-   spark.createDataFrame(splitValidationCost).toDF("k", "cost")
-        .write.mode(SaveMode.Overwrite).parquet("target/data/crossvalidation/validationCost")
-*/
+   val validationCost = splitTrainingCost.map(x => (x._1, x._2.map(y => y._2).sum / nbFolds.toDouble)).toList
+   spark.createDataFrame(validationCost).toDF("k", "cost")
+        .write.mode(SaveMode.Overwrite).parquet("target/data/crossvalidation/validationCost")  
+
     spark.stop()
   }
 
