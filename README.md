@@ -11,7 +11,7 @@ A "toy" dataset is used here. As we can see, it is obvious that 16 clusters cons
 
 <p align="center">
   <img width="460" height="300" src="figure/clustering/dataset.png">
-   <div class="caption",  align="center", style="font-weight:bold">Dataset</div>
+   <div class="caption",  align="center", font-weight="bold">Dataset</div>
 </p>
 
 ## The Elbow Method - an intuitive approach
