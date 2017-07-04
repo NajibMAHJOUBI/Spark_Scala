@@ -6,7 +6,7 @@ import org.apache.spark.mllib.clustering.{KMeans, KMeansModel}
 import org.apache.spark.mllib.clustering.KMeans.K_MEANS_PARALLEL
 import breeze.linalg.DenseVector
 
-class ExplainedVarianceTask(kmeans: KMeansModel, data: RDD[Vector]) {
+class ExplainedVarianceTask(data: RDD[Vector]) {
 
   var dataBreeze : RDD[DenseVector[Double]] = _
   var dataCenter: DenseVector[Double] = _
@@ -26,7 +26,7 @@ class ExplainedVarianceTask(kmeans: KMeansModel, data: RDD[Vector]) {
     totalVariance = dataBreeze.map(x => {val diff = x - dataCenter; diff.dot(diff)}).reduce(_ + _)
     this}
 
-  def computeBetweenVariance(): ExplainedVarianceTask = {
+  def computeBetweenVariance(kmeans: KMeansModel): ExplainedVarianceTask = {
     val clusterCenters = kmeans
                          .clusterCenters
                          .map(x => DenseVector(x.toDense.values))
@@ -41,8 +41,7 @@ class ExplainedVarianceTask(kmeans: KMeansModel, data: RDD[Vector]) {
       val diff = u - v
       diff.dot(diff)}
 
-    def computeExplainedVariance(): Double = {
-      betweenVariance / totalVariance}
+    def computeExplainedVariance(): Double = {betweenVariance / totalVariance}
 
   }
 
