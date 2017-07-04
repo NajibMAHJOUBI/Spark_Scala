@@ -29,19 +29,21 @@ object KMeans04 {
                 .rdd
                 .map(p => Vectors.dense(p.getDouble(p.fieldIndex("x")), p.getDouble(p.fieldIndex("y"))))
                 .persist()
-
-    val kmeans = new KMeansTask().computeKMeansModel(data, 16)
-
-    val explainedVarianceTask = new ExplainedVarianceTask(kmeans, data)
-    explainedVarianceTask.prepareData()
-    explainedVarianceTask.computeDataCenter()
-    explainedVarianceTask.computeTotalVariance(explainedVarianceTask.dataCenter)
-    explainedVarianceTask.computeBetweenVariance()
-
-    val explainedVariance = explainedVarianceTask.computeExplainedVariance()
-
-
-    println(s"explainedVariance = $explainedVariance")
+    
+    var variance: List[(Int, Double)] = List()
+    (4 to 20 by 1).foreach(nbCluster => {
+      val kmeans = new KMeansTask().computeKMeansModel(data, nbCluster)
+      val explainedVarianceTask = new ExplainedVarianceTask(kmeans, data)
+      explainedVarianceTask.prepareData()
+      explainedVarianceTask.computeDataCenter()
+      explainedVarianceTask.computeTotalVariance(explainedVarianceTask.dataCenter)
+      explainedVarianceTask.computeBetweenVariance()   
+      val explainedVariance = explainedVarianceTask.computeExplainedVariance()
+      variance = variance ++ List((nbCluster, explainedVariance))
+    })
+   
+     spark.createDataFrame(variance).toDF("k", "explained_variance")
+          .write.mode(SaveMode.Overwrite).parquet("target/data/explainedVariance")
 
     spark.stop()
   }
