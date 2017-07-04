@@ -9,7 +9,7 @@ import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.linalg.Vectors
 import breeze.linalg.DenseVector
 import fr.spark.clustering.kmeans.KMeansTask
-import fr.spark.clustering.kmeans.ExplainedVariance
+import fr.spark.clustering.kmeans.ExplainedVarianceTask
 
 /**
   explained variance
@@ -32,29 +32,17 @@ object KMeans04 {
 
     val kmeans = new KMeansTask().computeKMeansModel(data, 16)
 
-    val explainedVariance = new ExplainedVariance(kmeans, data).computeExplainedVariance()
-    println(s"explainedVariance = $explainedVariance")
-/**
-    val dataBreeze = data.map(x => DenseVector(x.toDense.values))  
-                               .persist()
-    val dataCount = dataBreeze.count()
-    val dataCenter = dataBreeze.reduce(_ + _) / dataCount.toDouble
+    val explainedVarianceTask = new ExplainedVarianceTask(kmeans, data)
+    explainedVarianceTask.prepareData()
+    explainedVarianceTask.computeDataCenter()
+    explainedVarianceTask.computeTotalVariance(explainedVarianceTask.dataCenter)
+    explainedVarianceTask.computeBetweenVariance()
 
-    println(dataCenter)
-     
-    val kmeans = new KMeansTask().computeKMeansModel(data, 16)
-    val clusterCenters = kmeans.clusterCenters.map(x => DenseVector(x.toDense.values))
-    val predictionCount = kmeans.predict(data).countByValue
-    println(predictionCount)
-    val centerSquaredDistance = clusterCenters.map(x => squaredDistance(x, dataCenter))
-    val betweenVariance = predictionCount.map(x => x._2.toDouble * centerSquaredDistance(x._1)).sum
-    val totalVariance = dataBreeze.map(x => squaredDistance(x, dataCenter)).reduce(_ + _)
-    val explainedVariance = betweenVariance / totalVariance
+    val explainedVariance = explainedVarianceTask.computeExplainedVariance()
 
-    println(s"betweenVariance = $betweenVariance")
-    println(s"totalVariance = $totalVariance")
+
     println(s"explainedVariance = $explainedVariance")
-    */
+
     spark.stop()
   }
 
