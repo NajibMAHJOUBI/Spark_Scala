@@ -12,12 +12,10 @@ import fr.spark.clustering.kmeans.KMeansTask
 import fr.spark.clustering.kmeans.ExplainedVarianceTask
 
 /**
-  Explained variance
-  the explained variance is the ration between the beetwen variance and the total variance
-  the explained of variance is computed for a range of number of cluster
+  CH-index
 */
 
-object KMeans04 {
+object KMeans05 {
 
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
@@ -32,21 +30,25 @@ object KMeans04 {
                 .map(p => Vectors.dense(p.getDouble(p.fieldIndex("x")), p.getDouble(p.fieldIndex("y"))))
                 .persist()
     
+    val nbData = data.count()
     val explainedVarianceTask = new ExplainedVarianceTask(data)
     explainedVarianceTask.prepareData()
     explainedVarianceTask.computeDataCenter()
     explainedVarianceTask.computeTotalVariance(explainedVarianceTask.dataCenter)
+    println(explainedVarianceTask.totalVariance)
     
     
     var variance: List[(Int, Double)] = List()
-    (4 to 20 by 1).foreach(nbCluster => {
+    (4 to 30 by 1).foreach(nbCluster => {
       val kmeans = new KMeansTask().computeKMeansModel(data, nbCluster) 
+      //println(kmeans.computeCost(data))
       explainedVarianceTask.computeBetweenVariance(kmeans)
-      variance = variance ++ List((nbCluster, explainedVarianceTask.computeExplainedVariance()))
+      explainedVarianceTask.computeWithinVariance()
+      variance = variance ++ List((nbCluster, explainedVarianceTask.computeChIndex(nbData.toInt, nbCluster)))
     })
-   
-     spark.createDataFrame(variance).toDF("k", "explained_variance")
-          .write.mode(SaveMode.Overwrite).parquet("target/data/explainedVariance")
+
+     spark.createDataFrame(variance).toDF("k", "ch_index")
+          .write.mode(SaveMode.Overwrite).parquet("target/data/chIndex")
 
     spark.stop()
   }
