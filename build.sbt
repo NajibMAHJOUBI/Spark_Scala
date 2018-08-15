@@ -1,10 +1,12 @@
-name := "SparkScala"
+name := "spark-clustering"
 
-version := "1.0"
+version := "0.1"
 
 scalaVersion := "2.11.8"
 
-libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "2.1.1" % "provided",
-  "org.apache.spark" %% "spark-sql" % "2.1.1" % "provided",
-  "org.apache.spark" %% "spark-mllib" % "2.1.1" % "provided")
+libraryDependencies ++= Seq("org.scalactic" %% "scalactic" % "3.0.5",
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "junit" % "junit" % "4.12" % Test,
+  "org.apache.spark" % "spark-core_2.11" % "2.3.1",
+  "org.apache.spark" % "spark-sql_2.11" % "2.3.1",
+  "org.apache.spark" % "spark-mllib_2.11" % "2.3.1")
