@@ -5,7 +5,7 @@ import org.apache.spark.ml.clustering.KMeans
 import org.apache.spark.mllib.clustering.{KMeans => MLlibKMeans}
 import org.apache.spark.sql.DataFrame
 
-class KMeansTask(val featuresColumn: String, predictionColumn: String) {
+class KMeansTask(val featuresColumn: String, predictionColumn: String) extends ClusteringFactory {
 
   var kMeans: KMeans = _
   var model: KMeansModel = _
@@ -19,13 +19,12 @@ class KMeansTask(val featuresColumn: String, predictionColumn: String) {
   this
   }
 
-  def fit(data: DataFrame): KMeansTask = {
+  override def fit(data: DataFrame): KMeansTask = {
     model = kMeans.fit(data)
     this
   }
 
-  def transform(data: DataFrame): DataFrame = {
-    model.transform(data)
-  }
+  override def transform(data: DataFrame): DataFrame = model.transform(data)
 
+  override def computeCost(data: DataFrame): Double = model.computeCost(data)
 }
