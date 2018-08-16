@@ -1,9 +1,10 @@
 package fr.spark.evaluation.clustering
 
 import org.apache.spark.ml.clustering.{BisectingKMeans, BisectingKMeansModel}
+import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.sql.DataFrame
 
-class BisectingKMeansTask(val featuresColumn: String, predictionColumn: String) {
+class BisectingKMeansTask(val featuresColumn: String, predictionColumn: String) extends ClusteringFactory {
 
   var bisectingKMeans: BisectingKMeans = _
   var model: BisectingKMeansModel = _
@@ -29,5 +30,8 @@ class BisectingKMeansTask(val featuresColumn: String, predictionColumn: String) 
     model.computeCost(data)
   }
 
+  override def clusterCenters(): Array[Vector] = {
+    model.clusterCenters
+  }
 
 }
