@@ -6,7 +6,9 @@ import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.SparkSession
 import java.io._
 
-object testSuiteElbow {
+import fr.spark.evaluation.criterium.{ExplainedVarianceTask, SilhouetteMethodTask}
+
+object testKMeans {
 
   def main(arguments: Array[String]): Unit = {
     val spark = SparkSession.builder.master("local").appName("Elbow method - cost function").getOrCreate()
@@ -20,25 +22,25 @@ object testSuiteElbow {
     val features = new DefineFeaturesTask(Array("x", "y"), featureColumn).run(spark, data)
 
     val kMeans = new KMeansTask(featureColumn, predictionColumn)
-    val bisectingKMeans = new BisectingKMeansTask(featureColumn, predictionColumn)
+    val explainedVariance = new ExplainedVarianceTask(featureColumn, predictionColumn)
+    val silhouetteMethod = new SilhouetteMethodTask(featureColumn, predictionColumn)
 
     var costKMeansList: List[(Int, Double)] = List()
-    var costBisectingKMeansList: List[(Int, Double)] = List()
+    var explainedVarianceList: List[(Int, Double)] = List()
+    var silhouetteList: List[(Int, Double)] = List()
 
     (2 to 20).foreach(k => {
       kMeans.defineModel(k)
       kMeans.fit(features)
+      val transform = kMeans.transform(features)
       costKMeansList = costKMeansList ++ List((k, kMeans.computeCost(features)))
-
-      bisectingKMeans.defineModel(k)
-      bisectingKMeans.fit(features)
-      costBisectingKMeansList = costBisectingKMeansList ++ List((k, bisectingKMeans.computeCost(features)))
+      explainedVarianceList = explainedVarianceList ++ List((k, explainedVariance.run(spark, transform, kMeans.computeCost(features), kMeans.clusterCenters())))
+      silhouetteList = silhouetteList ++ List((k, silhouetteMethod.run(transform)))
     })
-//    costKMeansList.foreach(println)
-//    costBisectingKMeansList.foreach(println)
 
-    saveCost(costKMeansList, "submission/elbow/kMeans/cost.csv")
-    saveCost(costBisectingKMeansList, "submission/elbow/bisectingKMeans/cost.csv")
+    saveCost(costKMeansList, "submission/kMeans/elbow.csv")
+    saveCost(explainedVarianceList, "submission/kMeans/explainedVariance.csv")
+    saveCost(silhouetteList, "submission/kMeans/silhouetteMethod.csv")
   }
 
   def saveCost(resultList: List[(Int, Double)], savePath: String): Unit = {
