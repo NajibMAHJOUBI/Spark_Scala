@@ -1,6 +1,7 @@
 package fr.spark.evaluation.clustering
 
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.ml.linalg.Vector
 
 trait ClusteringFactory {
 
@@ -12,4 +13,5 @@ trait ClusteringFactory {
 
   def computeCost(data: DataFrame): Double
 
+  def clusterCenters(): Array[Vector]
 }
