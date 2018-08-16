@@ -1,10 +1,9 @@
 package fr.spark.evaluation.clustering
 
 import org.apache.log4j.{Level, LogManager}
-import org.apache.spark.ml.linalg.Vectors
-import org.apache.spark.ml.linalg.VectorUDT
-import org.apache.spark.ml.linalg.Vectors
-import org.apache.spark.sql.types.{ArrayType, DoubleType, _}
+import org.apache.spark.ml.linalg.DenseVector
+import org.apache.spark.ml.linalg.SQLDataTypes.VectorType
+import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.junit.{After, Before, Test}
 
@@ -27,13 +26,13 @@ class KMeansTaskTest {
     val log = LogManager.getRootLogger
     log.setLevel(Level.WARN)
 
-    val data = Seq(Vectors.dense(Array(0.0, 0.0)),
-                   Vectors.dense(Array(1.0, 1.0)),
-                   Vectors.dense(Array(9.0, 8.0)),
-                   Vectors.dense(Array(8.0, 9.0))).map(value => Row(value))
+    val data = Seq(new DenseVector(Array(0.0, 0.0)),
+      new DenseVector(Array(1.0, 1.0)),
+      new DenseVector(Array(9.0, 8.0)),
+      new DenseVector(Array(8.0, 9.0))).map(value => Row(value))
     val rdd = spark.sparkContext.parallelize(data)
 
-    val schema = StructType(Seq(StructField("features", new VectorUDT(), false)))
+    val schema = StructType(Seq(StructField("features", VectorType, false)))
 
     dataFrame = spark.createDataFrame(rdd, schema)
   }
@@ -46,7 +45,19 @@ class KMeansTaskTest {
     assert(kmeans.kMeans.getFeaturesCol == featuresColumn)
     assert(kmeans.kMeans.getPredictionCol == predictionColumn)
 
-    dataFrame.show()
+    kmeans.fit(dataFrame)
+    assert(kmeans.model.getFeaturesCol == featuresColumn)
+    assert(kmeans.model.getPredictionCol == predictionColumn)
+    assert(kmeans.model.getK  == kClusters)
+
+    val transform = kmeans.transform(dataFrame)
+    assert(transform.isInstanceOf[DataFrame])
+    assert(transform.count() == dataFrame.count())
+    assert(transform.columns.contains(featuresColumn))
+    assert(transform.columns.contains(predictionColumn))
+
+    val cost = kmeans.computeCost(dataFrame)
+    assert(cost.isInstanceOf[Double])
   }
 
   @After def afterAll() {
